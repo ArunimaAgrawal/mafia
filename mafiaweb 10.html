@@ -3106,6 +3106,47 @@
             }).join('')}</div>${leaderboardHTML}${setupUI}<div class="spacer" style="min-height:24px;"></div>${hostStartRow}</div>`;
         }
 
+        const ROLE_ART = {
+            Villager: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+            Doctor: '<path d="M19 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3H5C3.34 2 2 3.34 2 5v6c0 1.66 1.34 3 3 3"/><path d="M12 22V14"/><path d="M8 18h8"/>',
+            Detective: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+            Vigilante: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+            Escort: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 11h8"/>',
+            Bodyguard: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            Mayor: '<path d="M6 18h12M12 12V6M9 6h6"/>',
+            Spy: '<path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/><path d="M12 14v4M8 18h8"/>',
+            Watcher: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+            DrunkDetective: '<path d="M17 3H7v15a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4V3z"/><path d="M7 6h10"/>',
+            ParanoidDoctor: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/>',
+            Trapper: '<path d="M4 10l8 4 8-4M4 14l8 4 8-4"/>',
+            Journalist: '<path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+            Herbalist: '<path d="M12 3c-5 0-9 4-9 9 0 7 9 10 9 10s9-3 9-10c0-5-4-9-9-9z"/>',
+            InnocentTwin: '<path d="M7 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/>',
+            Mafia: '<path d="M12 2L2 7l10 5 10-5zM2 17l10 5 10-5"/>',
+            Godfather: '<path d="M12 2L2 7l10 5 10-5zM2 17l10 5 10-5"/><path d="M12 12l-4 8h8z"/>',
+            Framer: '<path d="M3 3h18v18H3z"/><path d="M8 8l8 8M16 8l-8 8"/>',
+            Consigliere: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+            Blackmailer: '<path d="M12 2H2v20h20V2H12zM2 5l10 5 10-5"/>',
+            IdentityThief: '<circle cx="12" cy="12" r="10"/><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>',
+            Stalker: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+            Jester: '<path d="M12 3a9 9 0 0 1 9 9v1a9 9 0 0 1-18 0v-1a9 9 0 0 1 9-9z"/>',
+            Witch: '<path d="M12 2L3 9v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9l-9-7z"/>',
+            SerialKiller: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
+            Executioner: '<path d="M12 2v20M5 12h14"/><path d="M7 7l10 10"/>',
+            Survivor: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            GuardianAngel: '<path d="M12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/><path d="M12 10s-5 2-8 7l8 5 8-5c-3-5-8-7-8-7z"/>',
+            Saboteur: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>',
+            Phantom: '<path d="M12 2C7 2 3 6 3 11v11l4-4 5 5 5-5 4 4V11c0-5-4-9-9-9z"/>',
+            Arsonist: '<path d="M12 2c0 0-4 4-4 8a4 4 0 0 0 8 0c0-4-4-8-4-8z"/>',
+            PlagueDoctor: '<path d="M12 2L4 9v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-8-7z"/>',
+            Prophet: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/>',
+            Twin: '<path d="M7 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/>',
+            Gravedigger: '<path d="M12 2v20M5 12h14"/><path d="M7 7l10 10"/>',
+            Cursed: '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
+            Amnesiac: '<path d="M12 3v1M12 20v1M16.24 7.76l.7.7M7.05 16.95l.7.7M18 12h1M5 12h1M16.24 16.24l.7-.7M7.05 7.05l.7-.7"/>',
+            Demon: '<path d="M12 2l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10z"/>'
+        };
+
         /* ── ROLE DEAL (Tarot Card Style) ── */
         function tplRoleDeal(cs) {
             if (!cs.me || cs.me.ready) return `<div class="screen" style="align-items:center;"><div class="loader"></div><p class="text-dim">Waiting for others to acknowledge...</p></div>`;
@@ -3133,20 +3174,27 @@
                 if (cs.me.prophetAscended) extraInfo += `<div style="margin-top:16px; padding:12px; background:rgba(138,43,226,0.1); border:1px solid rgba(138,43,226,0.3); border-radius:8px; font-size:14px; color:var(--violet);">Your prophecy was fulfilled! You are immune to night attacks.</div>`;
             }
 
-            let symbol = r.team === 'Town' ? '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>' : r.team === 'Mafia' ? '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
+            let rolePath = ROLE_ART[cs.me.role] || ROLE_ART['Villager'];
+            let symbol = `<svg viewBox="0 0 24 24" width="48" height="48" stroke="${teamColor}" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">${rolePath}</svg>`;
 
-            return `<div class="screen"><div class="tarot-card" style="padding:48px 24px; border-color:${teamColor}; margin-top: 20px; background:${bgPattern}; box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 8px 32px rgba(0,0,0,0.6);">
-        <div class="tarot-corner tl">✧</div><div class="tarot-corner tr">✧</div>
-        <div class="tarot-corner bl">✧</div><div class="tarot-corner br">✧</div>
-        <div class="tarot-symbol" style="color:${teamColor};">${symbol}</div>
-        <div class="team-badge" style="border-color:${teamColor}; color:${teamColor};">◆ ${r.team} ◆</div>
-        <div class="subtitle" style="margin-bottom:0; font-size:14px;">You are the</div>
-        <h2 class="title-huge italic" style="color:${teamColor}; margin-top:8px; margin-bottom:0; text-shadow:0 0 30px ${teamColor}40;">${r.name}</h2>
-        <div class="tarot-divider"></div>
-        <p style="font-size:15px; line-height:1.7; color:var(--ink);">${r.desc}</p>
-        <p style="margin-top:16px; font-size:13px; color:var(--ink-dim); font-weight:500;">Goal: ${r.win}</p>
-        ${mates}${extraInfo}
-    </div><div class="spacer"></div><button class="btn-primary" data-action="ready">I Understand</button></div>`;
+            return `<div class="screen">
+                <div class="tarot-card" style="padding:48px 24px; border-color:${teamColor}; margin-top: 20px; background:${bgPattern}; box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 8px 32px rgba(0,0,0,0.6);">
+                    <div class="tarot-bg-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5">${rolePath}</svg></div>
+                    <div class="tarot-corner tl" style="color:${teamColor}">✧</div><div class="tarot-corner tr" style="color:${teamColor}">✧</div>
+                    <div class="tarot-corner bl" style="color:${teamColor}">✧</div><div class="tarot-corner br" style="color:${teamColor}">✧</div>
+                    <div class="tarot-symbol" style="color:${teamColor}; margin-bottom:16px;">${symbol}</div>
+                    <div class="team-badge" style="border-color:${teamColor}; color:${teamColor};">◆ ${r.team} ◆</div>
+                    <div class="subtitle" style="margin-bottom:0; font-size:14px; opacity:0.7;">You are the</div>
+                    <h2 class="title-huge italic" style="color:${teamColor}; margin-top:8px; margin-bottom:0; text-shadow:0 0 30px ${teamColor}40; font-size:48px;">${r.name}</h2>
+                    <div class="tarot-divider" style="background: linear-gradient(90deg, transparent, ${teamColor} 30%, ${teamColor} 70%, transparent);"></div>
+                    <p style="font-size:15px; line-height:1.7; color:var(--ink); font-weight:400;">${r.desc}</p>
+                    <p style="margin-top:20px; font-size:13px; color:var(--ink-dim); font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Goal: ${r.win}</p>
+                    ${mates}${extraInfo}
+                    <div style="margin-top:32px; opacity:0.3; font-size:10px; letter-spacing:8px; text-align:center;">✦ ✧ ✦</div>
+                </div>
+                <div class="spacer"></div>
+                <button class="btn-primary" data-action="ready">I Understand</button>
+            </div>`;
         }
 
         /* ── NIGHT ── */
