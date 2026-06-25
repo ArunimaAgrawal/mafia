@@ -1193,7 +1193,7 @@
             Survivor: { team: 'Neutral', name: 'Survivor', desc: 'Use vests (3 charges) to survive kills. Win if alive at game end.', win: 'Be alive when the game ends.', variant: true, replacesLabel: 'Witch' },
             GuardianAngel: { team: 'Neutral', name: 'Guardian Angel', desc: 'Protect your assigned ward each night. Win if they survive the game.', win: 'Your ward survives.', variant: true, replacesLabel: 'Witch' },
             // ── NEW NEUTRAL ROLES ──
-            Saboteur: { team: 'Neutral', name: 'Saboteur', desc: 'Silence a player\'s vote each night. Win if the game reaches Night 5 with Mafia alive.', win: 'Game reaches Night 5.' },
+            Saboteur: { team: 'Neutral', name: 'Saboteur', desc: 'Silence a player\'s vote each night. Win if the game reaches Night 3 with Mafia alive.', win: 'Game reaches Night 3.' },
             Phantom: { team: 'Neutral', name: 'Phantom', desc: 'Kill one player per night. Once per game, plant a decoy — fake a player\'s death. They return the next night.', win: 'Be the last standing.' },
             Arsonist: { team: 'Neutral', name: 'Arsonist', desc: 'Douse players at night. Choose to ignite — all doused players die at once. Escort blocking ignite cancels all.', win: 'Be the last standing.' },
             PlagueDoctor: { team: 'Neutral', name: 'Plague Doctor', desc: 'Infect a player at night. They die 2 nights later unless the Doctor cures them.', win: 'Plague the town.' },
@@ -1208,8 +1208,8 @@
         };
 
         const TOWN_ROLES = ['Villager', 'Doctor', 'Detective', 'Vigilante', 'Escort', 'ParanoidDoctor', 'DrunkDetective', 'Trapper', 'Watcher', 'Bodyguard', 'Mayor', 'Spy', 'InnocentTwin', 'Journalist', 'Herbalist'];
-        const NEUTRAL_KILLERS = ['SerialKiller', 'Phantom', 'Arsonist', 'PlagueDoctor', 'EvilTwin'];
-        const NEUTRAL_PASSIVE = ['Witch', 'Jester', 'Executioner', 'Survivor', 'GuardianAngel', 'Saboteur', 'Cursed', 'Amnesiac', 'Demon', 'Prophet', 'Gravedigger'];
+        const NEUTRAL_KILLERS = ['SerialKiller', 'Phantom', 'Arsonist', 'PlagueDoctor', 'EvilTwin', 'Gravedigger'];
+        const NEUTRAL_PASSIVE = ['Witch', 'Jester', 'Executioner', 'Survivor', 'GuardianAngel', 'Saboteur', 'Cursed', 'Amnesiac', 'Demon', 'Prophet'];
         const ALL_MAFIA_MEMBERS = ['Mafia', 'Godfather', 'Framer', 'Consigliere', 'Blackmailer', 'IdentityThief', 'Stalker'];
 
         const NIGHT_ORDER = [
@@ -1590,7 +1590,7 @@
 
                 if (ALL_MAFIA_MEMBERS.includes(p.role)) {
                     privateData.mafiaMates = hostState.players.filter(m => ALL_MAFIA_MEMBERS.includes(m.role) && m.id !== p.id).map(m => m.name);
-                    privateData.mafiaTarget = hostState.nightActions.mafia || hostState.nightActions.godfather || hostState.nightActions.identitythief || null;
+                    privateData.mafiaTarget = hostState.nightActions.godfather || hostState.nightActions.mafia || hostState.nightActions.identitythief || hostState.nightActions.framer || hostState.nightActions.consigliere || hostState.nightActions.blackmailer || null;
                 } else if (p.role) {
                     let targetKey = (p.role === 'IdentityThief' && p.stolenRole) ? p.stolenRole.toLowerCase() : p.role.toLowerCase();
                     privateData.nightTarget = hostState.nightActions[targetKey] || null;
@@ -1657,7 +1657,7 @@
 
             if (clientState.me && ALL_MAFIA_MEMBERS.includes(clientState.me.role)) {
                 clientState.mafiaMates = hostState.players.filter(m => ALL_MAFIA_MEMBERS.includes(m.role) && m.id !== net.myId).map(m => m.name);
-                clientState.mafiaTarget = hostState.nightActions.mafia || hostState.nightActions.godfather || hostState.nightActions.identitythief || null;
+                clientState.mafiaTarget = hostState.nightActions.godfather || hostState.nightActions.mafia || hostState.nightActions.identitythief || hostState.nightActions.framer || hostState.nightActions.consigliere || hostState.nightActions.blackmailer || null;
             } else {
                 clientState.mafiaMates = [];
                 clientState.mafiaTarget = null;
@@ -2010,7 +2010,7 @@
                 return { id: 'DRAW', team: 'Neutral', title: 'A Stalemate Was Reached.', winningTeams: [], winningRoles: [] };
             }
 
-            if (hostState.dayCount >= 5) {
+            if (hostState.dayCount >= 3) {
                 let saboteur = alive.find(p => p.role === 'Saboteur');
                 let mafiaAlive = alive.some(p => ALL_MAFIA_MEMBERS.includes(p.role));
                 if (saboteur && mafiaAlive) {
@@ -2064,6 +2064,7 @@
                     if (p.role === 'GuardianAngel' && hostState.tempState.angelWin?.includes(p.name)) won = true;
                     if (p.role === 'Prophet' && hostState.tempState.prophetWin?.includes(p.name)) won = true;
                     if (p.role === 'Demon' && p.demonResurrectUsed && p.demonShuffleUsed && p.demonVoteUsed) won = true;
+                    if (p.role === 'EvilTwin' && (win.id === 'MAFIA_WIN' || win.id === 'SK_WIN')) won = true;
                 } else {
                     // Dead players who still win
                     if (p.role === 'Executioner' && hostState.tempState.executionerWin?.includes(p.name)) won = true;
@@ -2263,6 +2264,9 @@
             if (acts.blackmailer) logIfValid('Blackmailer', acts.blackmailer);
 
             let mafiaTargetForVisit = acts.godfather || acts.mafia || acts.identitythief;
+            if (!mafiaTargetForVisit && !findAliveRole('Godfather') && !findAliveRole('Mafia') && !findAliveRole('IdentityThief') && !findAliveRole('Stalker')) {
+                mafiaTargetForVisit = acts.framer || acts.consigliere || acts.blackmailer;
+            }
             if (mafiaTargetForVisit) {
                 let executor = findAliveRole('Godfather') || findAliveRole('Mafia') || findAliveRole('IdentityThief');
                 if (executor && !isBlocked(executor.id)) logVisit(executor.id, mafiaTargetForVisit);
@@ -2332,8 +2336,11 @@
             hostState.IdentityThiefActive = !!(IdentityThiefPlayer && !isBlocked(IdentityThiefPlayer.id));
 
             let mafiaTarget = acts.godfather || acts.mafia || acts.identitythief;
+            if (!mafiaTarget && !findAliveRole('Godfather') && !findAliveRole('Mafia') && !findAliveRole('IdentityThief') && !findAliveRole('Stalker')) {
+                mafiaTarget = acts.framer || acts.consigliere || acts.blackmailer;
+            }
             if (mafiaTarget) {
-                let executor = findAliveRole('Godfather') || findAliveRole('Mafia') || findAliveRole('IdentityThief');
+                let executor = findAliveRole('Godfather') || findAliveRole('Mafia') || findAliveRole('IdentityThief') || findAliveRole('Framer') || findAliveRole('Consigliere') || findAliveRole('Blackmailer');
                 if (executor && !isBlocked(executor.id)) {
                     kills.push({ victimId: mafiaTarget, killer: 'Mafia', killerId: executor.id });
                 }
