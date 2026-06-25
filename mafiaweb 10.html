@@ -1216,7 +1216,7 @@
             'Escort', 'Witch', 'Saboteur', 'Trapper', 'Framer', 'Consigliere', 'Blackmailer',
             'Mafia', 'SerialKiller', 'Phantom', 'Arsonist', 'PlagueDoctor', 'EvilTwin', 'Gravedigger', 'Prophet', 'Vigilante',
             'Bodyguard', 'GuardianAngel', 'Doctor', 'ParanoidDoctor', 'Survivor',
-            'Detective', 'DrunkDetective', 'Stalker', 'Spy', 'Watcher',
+            'Detective', 'DrunkDetective', 'Spy', 'Watcher',
             'Demon'
         ];
 
@@ -1397,6 +1397,10 @@
                     }
                     let targetKey = (p.role === 'IdentityThief' && p.stolenRole) ? p.stolenRole.toLowerCase() : p.role.toLowerCase();
                     hostState.nightActions[targetKey] = actionVal;
+                    // IdentityThief with stolen role still contributes to Mafia kill
+                    if (p.role === 'IdentityThief' && p.stolenRole) {
+                        hostState.nightActions['identitythief'] = actionVal;
+                    }
                     p.ready = true;
                     syncClients();
 
@@ -1407,7 +1411,7 @@
             else if (data.type === 'VOTE') {
                 let p = hostState.players.find(x => x.id === data.playerId);
                 let target = hostState.players.find(x => x.id === data.target);
-                if (p && p.isAlive && !p.blackmailed && !p.sabotaged && target && target.enragedImmunityDay !== hostState.dayCount) {
+                if (p && p.isAlive && !p.blackmailed && !p.sabotaged && !p.demonSilenced && target && target.enragedImmunityDay !== hostState.dayCount) {
                     p.voteTarget = data.target; syncClients();
                 }
             }
@@ -1546,7 +1550,7 @@
 
             const safeTempState = JSON.parse(JSON.stringify(hostState.tempState || {}));
 
-            const privateIntelKeys = ['detResult', 'drunkDetResult', 'consigliereResult', 'blackmailerResult', 'spyResult', 'watcherResult', 'IdentityThiefResult', 'stalkerResult', 'gravediggerResult', 'escortDiedToSK', 'escortDiedToParanoid', 'doctorDiedToSK', 'detectiveDiedToSK'];
+            const privateIntelKeys = ['detResult', 'drunkDetResult', 'consigliereResult', 'blackmailerResult', 'spyResult', 'watcherResult', 'IdentityThiefResult', 'gravediggerResult', 'escortDiedToSK', 'escortDiedToParanoid', 'doctorDiedToSK', 'detectiveDiedToSK'];
             let intelMap = {};
             privateIntelKeys.forEach(k => {
                 if (safeTempState[k]) {
@@ -1637,7 +1641,6 @@
                 if (p.role === 'Spy' && intelMap.spyResult) privateData.spyResult = intelMap.spyResult;
                 if (p.role === 'Watcher' && intelMap.watcherResult) privateData.watcherResult = intelMap.watcherResult;
                 if (p.role === 'IdentityThief' && intelMap.IdentityThiefResult) privateData.IdentityThiefResult = intelMap.IdentityThiefResult;
-                if (p.role === 'Stalker' && intelMap.stalkerResult) privateData.stalkerResult = intelMap.stalkerResult;
                 if (p.role === 'Gravedigger' && intelMap.gravediggerResult) privateData.gravediggerResult = intelMap.gravediggerResult;
                 if (p.isAlive && p.infectedNight && (hostState.dayCount - p.infectedNight === 1)) {
                     privateData.plagueWarning = true;
@@ -1762,8 +1765,16 @@
                                     break;
                                 case 'Doctor': case 'Bodyguard': case 'ParanoidDoctor':
                                 case 'Detective': case 'DrunkDetective': case 'Spy': case 'Watcher':
-                                case 'Escort': case 'Witch': case 'Saboteur':
+                                case 'Escort': case 'Saboteur':
                                     target = nonSelf.length > 0 ? nonSelf[Math.floor(Math.random() * nonSelf.length)].id : null;
+                                    break;
+                                case 'Witch':
+                                    if (nonSelf.length >= 2) {
+                                        let puppetId = nonSelf[Math.floor(Math.random() * nonSelf.length)].id;
+                                        let victimPool = nonSelf.filter(p => p.id !== puppetId);
+                                        let victimId = victimPool[Math.floor(Math.random() * victimPool.length)].id;
+                                        target = JSON.stringify({ puppetId, victimId });
+                                    }
                                     break;
                                 case 'Trapper':
                                     if (b.trapperCharges > 0) {
@@ -1790,9 +1801,6 @@
                                     break;
                                 case 'GuardianAngel':
                                     target = b.guardianTarget || null;
-                                    break;
-                                case 'Stalker':
-                                    target = nonSelf.length > 0 ? nonSelf[Math.floor(Math.random() * nonSelf.length)].id : null;
                                     break;
                                 case 'Phantom':
                                     target = JSON.stringify({ action: 'kill', target: nonSelf.length > 0 ? nonSelf[Math.floor(Math.random() * nonSelf.length)].id : null });
@@ -1830,6 +1838,10 @@
                                 }
                             }
                             hostState.nightActions[b.role.toLowerCase()] = actionVal;
+                            // Bot IdentityThief with stolen role: also store under stolen role key
+                            if (b.role === 'IdentityThief' && b.stolenRole) {
+                                hostState.nightActions[b.stolenRole.toLowerCase()] = actionVal;
+                            }
                             b.ready = true;
                             changed = true;
                         });
@@ -1842,7 +1854,7 @@
                     }
                 }
                 else if (hostState.phase === 'VOTE') {
-                    let votingBots = hostState.players.filter(p => p.isBot && p.isAlive && !p.voteTarget && !p.blackmailed && !p.sabotaged);
+                    let votingBots = hostState.players.filter(p => p.isBot && p.isAlive && !p.voteTarget && !p.blackmailed && !p.sabotaged && !p.demonSilenced);
                     if (votingBots.length > 0) {
                         let alivePlayers = hostState.players.filter(p => p.isAlive && !p.fakeDeceased);
                         votingBots.forEach(b => {
@@ -2577,7 +2589,6 @@
                         let isEvil = ALL_MAFIA_MEMBERS.includes(susp.role) || NEUTRAL_KILLERS.includes(susp.role) || susp.role === 'Witch';
                         if (framedTarget === susp.id) isEvil = true;
                         if (susp.role === 'Godfather') isEvil = false;
-                        if (susp.role === 'ParanoidDoctor') isEvil = false;
                         hostState.tempState.detResult = isEvil ? `${susp.name} is suspicious.` : `${susp.name} appears innocent.`;
                     }
                 }
@@ -2594,14 +2605,6 @@
                         if (Math.random() < 0.5) isEvil = !isEvil;
                         hostState.tempState.drunkDetResult = isEvil ? `${susp.name} is suspicious.` : `${susp.name} appears innocent.`;
                     }
-                }
-            }
-
-            if (acts.stalker) {
-                let stp = findAliveRole('Stalker');
-                if (stp && !isBlocked(stp.id)) {
-                    let target = findPlayer(acts.stalker);
-                    if (target) hostState.tempState.stalkerResult = `${target.name} is the ${ROLES[target.role]?.name || target.role}.`;
                 }
             }
 
@@ -3419,7 +3422,6 @@
                 if (role === 'Spy' && cs.me.spyResult) resultHTML += dawnResult(' Spy Report', cs.me.spyResult, 'var(--gold)');
                 if (role === 'Watcher' && cs.me.watcherResult) resultHTML += dawnResult(' Watch Report', cs.me.watcherResult, 'var(--gold)');
                 if (role === 'IdentityThief' && cs.me.IdentityThiefResult) resultHTML += dawnResult(' Cleaned', cs.me.IdentityThiefResult, 'var(--blood-lit)');
-                if (role === 'Stalker' && cs.me.stalkerResult) resultHTML += dawnResult(' Shadow Report', cs.me.stalkerResult, 'var(--neutral)');
                 if (role === 'Gravedigger' && cs.me.gravediggerResult) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><path d="M7 4h10l2 8-2 8H7l-2-8 2-8z"></path></svg> Exhumed', cs.me.gravediggerResult, 'var(--neutral)');
                 if (role === 'Witch' && cs.me.witchPuppetRoleName) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg> Dark Whispers', `Your puppet's true role is the <b>${cs.me.witchPuppetRoleName}</b>.`, 'var(--violet)');
                 if (cs.me.plagueWarning) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M12 7v5l3 3"></path></svg> Plague Warning', 'You feel a sickness taking hold... you will die tomorrow night unless the Doctor saves you.', 'var(--sage)');
