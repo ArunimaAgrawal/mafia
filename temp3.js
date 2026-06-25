@@ -319,7 +319,7 @@ function handleClientMessage(data) {
                 p.stalkerUsed = true;
                 target.publiclyRevealedRole = true;
                 if (!hostState.tempState.dayEvents) hostState.tempState.dayEvents = [];
-                hostState.tempState.dayEvents.push(`👁️ The Stalker, ${p.name}, has publicly exposed ${target.name}'s role! They are the ${ROLES[target.role]?.name || target.role}!`);
+                hostState.tempState.dayEvents.push(` The Stalker, ${p.name}, has publicly exposed ${target.name}'s role! They are the ${ROLES[target.role]?.name || target.role}!`);
                 syncClients();
             }
         }
@@ -346,10 +346,10 @@ function handleClientMessage(data) {
                 if (target.role === data.guessedRole) {
                     target.publiclyRevealedRole = true;
                     p.journalistImmunityDay = hostState.dayCount;
-                    hostState.tempState.dayEvents.push(`📰 ${p.name} published a correct exposé! ${target.name} is confirmed to be the ${ROLES[data.guessedRole].name}! The Journalist gains one-night immunity.`);
+                    hostState.tempState.dayEvents.push(` ${p.name} published a correct exposé! ${target.name} is confirmed to be the ${ROLES[data.guessedRole].name}! The Journalist gains one-night immunity.`);
                 } else {
                     p.isAlive = false;
-                    hostState.tempState.dayEvents.push(`📰 ${p.name} incorrectly accused ${target.name} of being the ${ROLES[data.guessedRole].name}! The Journalist, ${p.name}, has resigned in disgrace and is eliminated.`);
+                    hostState.tempState.dayEvents.push(` ${p.name} incorrectly accused ${target.name} of being the ${ROLES[data.guessedRole].name}! The Journalist, ${p.name}, has resigned in disgrace and is eliminated.`);
                 }
                 
                 let win = checkWin();
@@ -369,7 +369,7 @@ function handleClientMessage(data) {
                 else if (p.herbalistPotion === 'Poison') {
                     target.herbalistPoisoned = true;
                     if (!hostState.tempState.dayEvents) hostState.tempState.dayEvents = [];
-                    hostState.tempState.dayEvents.push(`🧪 ${target.name} has been poisoned and will die at dusk unless voted out!`);
+                    hostState.tempState.dayEvents.push(` ${target.name} has been poisoned and will die at dusk unless voted out!`);
                 }
                 syncClients();
             }
@@ -1700,7 +1700,7 @@ function renderRulebook() {
     
     let html = `<div class="rulebook-header">
         <h2 class="serif" style="color:var(--gold); font-size:24px;">Encyclopedia</h2>
-        <button class="rulebook-close" data-action="toggle-rulebook">✕</button>
+        <button class="rulebook-close" data-action="toggle-rulebook"></button>
     </div>
     <div class="rulebook-content">
         <input type="text" class="search-bar" id="rulebook-search" placeholder="Search roles, teams, or mechanics..." value="${rulebookSearch}">`;
@@ -1745,15 +1745,15 @@ function tplLobby(cs) {
         let mode = hostState.roleMode;
         
         let modeToggle = `<div class="mode-toggle">
-            <button class="${mode === 'classic' ? 'active' : ''}" data-action="set-role-mode" data-val="classic">⚙ Classic</button>
-            <button class="${mode === 'pool' ? 'active' : ''}" data-action="set-role-mode" data-val="pool">🃏 Pool Builder</button>
+            <button class="${mode === 'classic' ? 'active' : ''}" data-action="set-role-mode" data-val="classic"> Classic</button>
+            <button class="${mode === 'pool' ? 'active' : ''}" data-action="set-role-mode" data-val="pool"> Pool Builder</button>
         </div>`;
 
         if (mode === 'classic') {
             let roleChecks = Object.keys(ROLES).filter(r => !ROLES[r]._internal).map(r => {
                 let isChecked = hostState.activeRoles.includes(r);
                 let color = TEAM_COLORS[ROLES[r].team];
-                let prefix = ROLES[r].variant ? '<span style="opacity:0.5; font-size:10px;">⟳</span> ' : '';
+                let prefix = ROLES[r].variant ? '<span style="opacity:0.5; font-size:10px;"></span> ' : '';
                 return `<div class="role-toggle ${isChecked ? 'active' : ''}" data-action="toggle-role" data-val="${r}" style="${isChecked ? `border-color:${color};color:${color};` : ''}">${prefix}${ROLES[r].name}</div>`;
             }).join('');
 
@@ -1794,7 +1794,7 @@ function tplLobby(cs) {
                         Host Priority
                     </div>
                     <div class="role-toggle ${cs.settings.doctorRepeatEnforced ? 'active' : ''}" data-action="toggle-setting" data-val="doctorRepeatEnforced" style="border-color:var(--sky); color: ${cs.settings.doctorRepeatEnforced ? 'var(--sky)' : 'var(--ink-dim)'};">
-                        ${cs.settings.doctorRepeatEnforced ? '🩺 Doctor Repeat: OFF' : '🩺 Doctor Repeat: ON'}
+                        ${cs.settings.doctorRepeatEnforced ? ' Doctor Repeat: OFF' : ' Doctor Repeat: ON'}
                     </div>
                 </div>
                 <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; justify-content:center;">
@@ -1818,7 +1818,7 @@ function tplLobby(cs) {
                     let count = countInPool(r);
                     let isFixed = (r === 'Villager' || r === 'Mafia');
                     let minCount = isFixed ? 1 : 0;
-                    let variantPrefix = rd.variant ? `<span class="role-variant-prefix">⟳</span>` : '';
+                    let variantPrefix = rd.variant ? `<span class="role-variant-prefix"></span>` : '';
                     let subtitle = rd.replacesLabel ? `<div class="role-sub">replaces ${rd.replacesLabel}</div>` : '';
                     roleListHTML += `<div class="pool-role-row">
                         <div class="dot" style="width:6px; height:6px; border-radius:50%; background:${teamColor}; flex-shrink:0;"></div>
@@ -1869,10 +1869,10 @@ function tplLobby(cs) {
                         Host Priority
                     </div>
                     <div class="role-toggle ${cs.settings.doctorRepeatEnforced ? 'active' : ''}" data-action="toggle-setting" data-val="doctorRepeatEnforced" style="border-color:var(--sky); color: ${cs.settings.doctorRepeatEnforced ? 'var(--sky)' : 'var(--ink-dim)'}; margin-right: 4px; margin-bottom: 4px;">
-                        ${cs.settings.doctorRepeatEnforced ? '🩺 Doctor Repeat: OFF' : '🩺 Doctor Repeat: ON'}
+                        ${cs.settings.doctorRepeatEnforced ? ' Doctor Repeat: OFF' : ' Doctor Repeat: ON'}
                     </div>
                     <div class="role-toggle ${cs.settings.poolBuilderCaps ? 'active' : ''}" data-action="toggle-setting" data-val="poolBuilderCaps" style="border-color:var(--gold); color: ${cs.settings.poolBuilderCaps ? 'var(--gold)' : 'var(--ink-dim)'};">
-                        ${cs.settings.poolBuilderCaps ? '⚗️ Pool Caps: ON' : '⚗️ Pool Caps: OFF'}
+                        ${cs.settings.poolBuilderCaps ? ' Pool Caps: ON' : ' Pool Caps: OFF'}
                     </div>
                 </div>
                 <div style="display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; justify-content:center;">
@@ -1896,11 +1896,11 @@ function tplLobby(cs) {
             <div style="font-size:12px; color:var(--ink-ghost); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.1em;">Game Setup (${modeLabel})</div>
             ${cs.roleMode === 'pool' 
                 ? `<div style="font-size:16px; font-weight:600; margin-bottom:8px;">
-                    <span style="color:var(--gold);">${summary.town} Town</span> · 
-                    <span style="color:var(--blood-lit);">${summary.mafia} Mafia</span> · 
+                    <span style="color:var(--gold);">${summary.town} Town</span>  
+                    <span style="color:var(--blood-lit);">${summary.mafia} Mafia</span>  
                     <span style="color:var(--neutral);">${summary.neutral} Neutral</span>
                    </div>`
-                : `<div style="color:var(--ink-dim); font-size:14px; line-height:1.6;">${(cs.activeRoles || []).map(r => ROLES[r]?.name || r).join(' • ')}</div>`
+                : `<div style="color:var(--ink-dim); font-size:14px; line-height:1.6;">${(cs.activeRoles || []).map(r => ROLES[r]?.name || r).join('  ')}</div>`
             }
             <div style="margin-top:16px; font-size:12px; color:var(--ink-ghost);">Day: ${cs.settings.discussTime}s | Vote: ${cs.settings.voteTime}s${cs.roleMode === 'classic' ? ` | Mafia: ${cs.settings.mafiaCount === -1 ? 'Auto' : cs.settings.mafiaCount}` : ''}</div>
         </div>`;
@@ -1925,7 +1925,7 @@ function tplLobby(cs) {
             .map(([name, stats]) => ({ name, games: stats.games, wins: stats.wins }))
             .sort((a, b) => b.wins - a.wins);
         leaderboardHTML = `<div class="card" style="margin-top:24px; padding:20px;">
-            <div style="font-size:12px; color:var(--gold); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.1em; font-weight:600; text-align:center;">🏆 Leaderboard</div>
+            <div style="font-size:12px; color:var(--gold); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.1em; font-weight:600; text-align:center;"> Leaderboard</div>
             <div style="display:flex; flex-direction:column; gap:8px;">
                 ${entries.map((e, i) => `<div style="display:flex; justify-content:space-between; font-size:13px; padding:8px; background:rgba(0,0,0,0.2); border-radius:6px;">
                     <span><b>${i+1}.</b> ${e.name}</span>
@@ -1972,10 +1972,10 @@ function tplRoleDeal(cs) {
     let symbol = r.team === 'Town' ? '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>' : r.team === 'Mafia' ? '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
 
     return `<div class="screen"><div class="tarot-card" style="padding:48px 24px; border-color:${teamColor}; margin-top:20px; background:${bgPattern}; box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 8px 32px rgba(0,0,0,0.6);">
-        <div class="tarot-corner tl">✧</div><div class="tarot-corner tr">✧</div>
-        <div class="tarot-corner bl">✧</div><div class="tarot-corner br">✧</div>
+        <div class="tarot-corner tl"></div><div class="tarot-corner tr"></div>
+        <div class="tarot-corner bl"></div><div class="tarot-corner br"></div>
         <div class="tarot-symbol" style="color:${teamColor};">${symbol}</div>
-        <div class="team-badge" style="border-color:${teamColor}; color:${teamColor};">◆ ${r.team} ◆</div>
+        <div class="team-badge" style="border-color:${teamColor}; color:${teamColor};"> ${r.team} </div>
         <div class="subtitle" style="margin-bottom:0; font-size:14px;">You are the</div>
         <h2 class="title-huge italic" style="color:${teamColor}; margin-top:8px; margin-bottom:0; text-shadow:0 0 30px ${teamColor}40;">${r.name}</h2>
         <div class="tarot-divider"></div>
@@ -2056,8 +2056,8 @@ function tplNight(cs) {
         let decoyUsed = cs.me.phantomDecoyUsed;
         let mode = uiState.phantomMode;
         let modeHTML = `<div style="display:flex; gap:8px; margin-bottom:24px; justify-content:center;">
-            <button class="btn-preset ${mode === 'kill' ? 'active' : ''}" data-action="phantom-mode" data-val="kill" style="border-color:var(--blood); color:var(--blood);">☠ Kill</button>
-            <button class="btn-preset ${mode === 'decoy' ? 'active' : ''}" data-action="phantom-mode" data-val="decoy" ${decoyUsed ? 'disabled' : ''} style="border-color:var(--violet); color:var(--violet);">${decoyUsed ? '✗ Decoy Used' : '👻 Decoy'}</button>
+            <button class="btn-preset ${mode === 'kill' ? 'active' : ''}" data-action="phantom-mode" data-val="kill" style="border-color:var(--blood); color:var(--blood);"> Kill</button>
+            <button class="btn-preset ${mode === 'decoy' ? 'active' : ''}" data-action="phantom-mode" data-val="decoy" ${decoyUsed ? 'disabled' : ''} style="border-color:var(--violet); color:var(--violet);">${decoyUsed ? ' Decoy Used' : ' Decoy'}</button>
         </div>`;
         let targets = alivePlayers.filter(p => p.id !== cs.me.id);
         return `<div class="screen screen-top">
@@ -2089,7 +2089,7 @@ function tplNight(cs) {
         let exhumeSel = uiState.gravediggerExhume;
         return `<div class="screen screen-top">
             <h2 class="title italic" style="color:${teamColor}; font-size:42px;">Gravedigger</h2>
-            <p class="subtitle" style="font-size:13px;">Select a kill target ${killSel ? '✓' : ''} and an exhume target ${exhumeSel ? '✓' : ''}</p>
+            <p class="subtitle" style="font-size:13px;">Select a kill target ${killSel ? '' : ''} and an exhume target ${exhumeSel ? '' : ''}</p>
             <div style="font-size:11px; color:var(--blood-lit); text-transform:uppercase; margin-bottom:8px; font-weight:600;">Kill Target</div>
             <div class="grid">${targets.map(p => `<div class="target-card ${killSel === p.id ? 'mafia-target' : ''}" data-action="gravedigger-kill" data-val="${p.id}"><div class="avatar" style="display:flex;align-items:center;justify-content:center;">${p.isBot?'<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>':p.name.charAt(0).toUpperCase()}</div><div style="font-weight:600; font-size:13px;">${p.name}</div></div>`).join('')}</div>
             ${deadPlayers.length > 0 ? `
@@ -2106,7 +2106,7 @@ function tplNight(cs) {
         let victimSel = uiState.witchVictim;
         return `<div class="screen screen-top">
             <h2 class="title italic" style="color:${teamColor}; font-size:42px;">Witch</h2>
-            <p class="subtitle" style="font-size:13px;">Select a Puppet ${puppetSel ? '✓' : ''} and their Victim ${victimSel ? '✓' : ''}</p>
+            <p class="subtitle" style="font-size:13px;">Select a Puppet ${puppetSel ? '' : ''} and their Victim ${victimSel ? '' : ''}</p>
             <div style="font-size:11px; color:var(--violet); text-transform:uppercase; margin-bottom:8px; font-weight:600;">Control Target (Puppet)</div>
             <div class="grid">${targets.map(p => `<div class="target-card ${puppetSel === p.id ? 'selected' : ''}" data-action="witch-puppet" data-val="${p.id}"><div class="avatar" style="display:flex;align-items:center;justify-content:center;">${p.isBot?'<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>':p.name.charAt(0).toUpperCase()}</div><div style="font-weight:600; font-size:13px;">${p.name}</div></div>`).join('')}</div>
             <div style="font-size:11px; color:var(--blood-lit); text-transform:uppercase; margin-bottom:8px; margin-top:16px; font-weight:600;">Force Them To Visit (Victim)</div>
@@ -2187,7 +2187,7 @@ function tplDawn(cs) {
         }).join('')}</div>`; 
 
     let markHTML = (cs.me && cs.me.role === 'Prophet' && cs.tempState.prophetAscensionMessage) ? `<div class="card" style="border-color:var(--violet); margin-top:16px; padding:20px;">
-        <div style="color:var(--violet); font-size:14px; font-weight:600;">✨ Ascended</div>
+        <div style="color:var(--violet); font-size:14px; font-weight:600;"> Ascended</div>
         <div style="font-size:18px; margin-top:8px; color:var(--ink);" class="italic">Your prophecy was correct. You are now immune to night attacks.</div>
     </div>` : '';
 
@@ -2200,21 +2200,21 @@ function tplDawn(cs) {
     let resultHTML = '';
     if (cs.me) {
         let role = cs.me.role;
-        if (role === 'Detective' && cs.me.detResult) resultHTML += dawnResult('🕵️ Investigation', cs.me.detResult, 'var(--violet)');
-        if (role === 'DrunkDetective' && cs.me.drunkDetResult) resultHTML += dawnResult('🍺 Investigation', cs.me.drunkDetResult, 'var(--violet)');
-        if (role === 'Consigliere' && cs.me.consigliereResult) resultHTML += dawnResult('🔍 Intel', cs.me.consigliereResult, 'var(--blood-lit)');
-        if (role === 'Blackmailer' && cs.me.blackmailerResult) resultHTML += dawnResult('📋 Intercepted', cs.me.blackmailerResult, 'var(--blood-lit)');
-        if (role === 'Spy' && cs.me.spyResult) resultHTML += dawnResult('🕵️ Spy Report', cs.me.spyResult, 'var(--gold)');
-        if (role === 'Watcher' && cs.me.watcherResult) resultHTML += dawnResult('👁 Watch Report', cs.me.watcherResult, 'var(--gold)');
-        if (role === 'IdentityThief' && cs.me.IdentityThiefResult) resultHTML += dawnResult('🧹 Cleaned', cs.me.IdentityThiefResult, 'var(--blood-lit)');
-        if (role === 'Stalker' && cs.me.stalkerResult) resultHTML += dawnResult('🕶 Shadow Report', cs.me.stalkerResult, 'var(--neutral)');
+        if (role === 'Detective' && cs.me.detResult) resultHTML += dawnResult(' Investigation', cs.me.detResult, 'var(--violet)');
+        if (role === 'DrunkDetective' && cs.me.drunkDetResult) resultHTML += dawnResult(' Investigation', cs.me.drunkDetResult, 'var(--violet)');
+        if (role === 'Consigliere' && cs.me.consigliereResult) resultHTML += dawnResult(' Intel', cs.me.consigliereResult, 'var(--blood-lit)');
+        if (role === 'Blackmailer' && cs.me.blackmailerResult) resultHTML += dawnResult(' Intercepted', cs.me.blackmailerResult, 'var(--blood-lit)');
+        if (role === 'Spy' && cs.me.spyResult) resultHTML += dawnResult(' Spy Report', cs.me.spyResult, 'var(--gold)');
+        if (role === 'Watcher' && cs.me.watcherResult) resultHTML += dawnResult(' Watch Report', cs.me.watcherResult, 'var(--gold)');
+        if (role === 'IdentityThief' && cs.me.IdentityThiefResult) resultHTML += dawnResult(' Cleaned', cs.me.IdentityThiefResult, 'var(--blood-lit)');
+        if (role === 'Stalker' && cs.me.stalkerResult) resultHTML += dawnResult(' Shadow Report', cs.me.stalkerResult, 'var(--neutral)');
         if (role === 'Gravedigger' && cs.me.gravediggerResult) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><path d="M7 4h10l2 8-2 8H7l-2-8 2-8z"></path></svg> Exhumed', cs.me.gravediggerResult, 'var(--neutral)');
         if (role === 'Witch' && cs.me.witchPuppetRoleName) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg> Dark Whispers', `Your puppet's true role is the <b>${cs.me.witchPuppetRoleName}</b>.`, 'var(--violet)');
         if (cs.me.plagueWarning) resultHTML += dawnResult('<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M12 7v5l3 3"></path></svg> Plague Warning', 'You feel a sickness taking hold... you will die tomorrow night unless the Doctor saves you.', 'var(--sage)');
-        if (cs.me.escortDiedToSK) resultHTML += dawnResult('☠ Block Failed', 'You tried to block a Serial Killer... and paid with your life.', 'var(--blood)');
-        if (cs.me.escortDiedToParanoid) resultHTML += dawnResult('☠ Block Failed', 'You blocked a Paranoid Doctor, who panicked and killed you.', 'var(--blood)');
-        if (cs.me.doctorDiedToSK) resultHTML += dawnResult('☠ Heal Failed', 'You tried to heal a Serial Killer... and paid with your life.', 'var(--blood)');
-        if (cs.me.detectiveDiedToSK) resultHTML += dawnResult('☠ Investigation Failed', 'You investigated a Serial Killer... they caught you snooping.', 'var(--blood)');
+        if (cs.me.escortDiedToSK) resultHTML += dawnResult(' Block Failed', 'You tried to block a Serial Killer... and paid with your life.', 'var(--blood)');
+        if (cs.me.escortDiedToParanoid) resultHTML += dawnResult(' Block Failed', 'You blocked a Paranoid Doctor, who panicked and killed you.', 'var(--blood)');
+        if (cs.me.doctorDiedToSK) resultHTML += dawnResult(' Heal Failed', 'You tried to heal a Serial Killer... and paid with your life.', 'var(--blood)');
+        if (cs.me.detectiveDiedToSK) resultHTML += dawnResult(' Investigation Failed', 'You investigated a Serial Killer... they caught you snooping.', 'var(--blood)');
     }
 
     return `<div class="screen screen-top"><h1 class="title">Dawn of Day ${cs.dayCount}</h1><p class="subtitle">The town wakes to find...</p>${returnsHTML}${deathsHTML}${markHTML}${shuffleHTML}${resultHTML}${!net.isHost ? `<div class="spacer"></div><div class="text-center text-dim" style="padding:20px;">Waiting for host to continue...</div>` : ''}</div>`; 
@@ -2231,8 +2231,8 @@ function dawnResult(label, text, color) {
 function tplDay(cs) { 
     let intelHTML = '';
     if (cs.me) {
-        if (cs.me.role === 'Detective' && cs.me.detResult) intelHTML = `<div style="color:var(--violet); font-size:14px; text-align:center; margin-bottom:24px; font-weight:600;">🕵️ ${cs.me.detResult}</div>`;
-        if (cs.me.role === 'DrunkDetective' && cs.me.drunkDetResult) intelHTML = `<div style="color:var(--violet); font-size:14px; text-align:center; margin-bottom:24px; font-weight:600;">🍺 ${cs.me.drunkDetResult}</div>`;
+        if (cs.me.role === 'Detective' && cs.me.detResult) intelHTML = `<div style="color:var(--violet); font-size:14px; text-align:center; margin-bottom:24px; font-weight:600;"> ${cs.me.detResult}</div>`;
+        if (cs.me.role === 'DrunkDetective' && cs.me.drunkDetResult) intelHTML = `<div style="color:var(--violet); font-size:14px; text-align:center; margin-bottom:24px; font-weight:600;"> ${cs.me.drunkDetResult}</div>`;
     }
 
     let statusMsg = (!cs.me || !cs.me.isAlive) ? `<div style="color:var(--ink-ghost); text-align:center; margin-bottom:24px; font-style:italic;">You are dead. Observe the living.</div>` : '';
@@ -2262,13 +2262,13 @@ function tplDay(cs) {
         mayorBanner = `<div style="text-align:center; margin-bottom:20px; padding:10px; background:rgba(201,167,20,0.08); border:1px solid rgba(201,167,20,0.3); border-radius:8px; color:var(--gold); font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polygon points="2 20 22 20 18 10 12 15 6 10 2 20"></polygon></svg> Revealed Mayor${cs.mayorReveals.length > 1 ? 's' : ''}: <b>${cs.mayorReveals.join(', ')}</b></div>`;
     }
 
-    let cursedBanner = (cs.me && cs.me.cursedActivated) ? `<div style="text-align:center; margin-bottom:20px; padding:12px; background:rgba(163,29,29,0.1); border:1px solid var(--blood); border-radius:8px; color:var(--blood-lit); font-weight:600; font-size:13px;">🌑 The Curse has awakened... You are now Mafia!</div>` : '';
+    let cursedBanner = (cs.me && cs.me.cursedActivated) ? `<div style="text-align:center; margin-bottom:20px; padding:12px; background:rgba(163,29,29,0.1); border:1px solid var(--blood); border-radius:8px; color:var(--blood-lit); font-weight:600; font-size:13px;"> The Curse has awakened... You are now Mafia!</div>` : '';
 
     let stalkerUI = '';
     if (cs.me && cs.me.role === 'Stalker' && cs.me.isAlive && !cs.me.stalkerUsed) {
         let aliveOthers = cs.players.filter(p => p.isAlive && p.id !== cs.me.id);
         stalkerUI = `<div class="card" style="border-color:var(--blood); margin-bottom:20px; padding:16px; text-align:left;">
-            <div style="font-size:12px; color:var(--blood); font-weight:600; text-transform:uppercase; margin-bottom:12px;">👁️ Publicly Expose (One Use)</div>
+            <div style="font-size:12px; color:var(--blood); font-weight:600; text-transform:uppercase; margin-bottom:12px;"> Publicly Expose (One Use)</div>
             <select id="stalker-target" onchange="uiState.stalkerTarget = this.value" style="width:100%; padding:8px; background:var(--bg-dark); color:var(--ink); border:1px solid var(--border); border-radius:6px; margin-bottom:12px; font-family:Inter; font-size:13px;">
                 <option value="">Select player to expose...</option>
                 ${aliveOthers.map(p => `<option value="${p.id}" ${uiState.stalkerTarget === p.id ? 'selected' : ''}>${p.name}</option>`).join('')}
@@ -2282,7 +2282,7 @@ function tplDay(cs) {
         let deadPlayers = cs.players.filter(p => !p.isAlive && p.id !== cs.me.id);
         if (deadPlayers.length > 0) {
             amnesiacUI = `<div class="card" style="border-color:var(--neutral); margin-bottom:20px; padding:16px; text-align:left;">
-                <div style="font-size:12px; color:var(--neutral); font-weight:600; text-transform:uppercase; margin-bottom:12px;">🎭 Remember Role (One Use)</div>
+                <div style="font-size:12px; color:var(--neutral); font-weight:600; text-transform:uppercase; margin-bottom:12px;"> Remember Role (One Use)</div>
                 <select id="amnesiac-target" onchange="uiState.amnesiacTarget = this.value" style="width:100%; padding:8px; background:var(--bg-dark); color:var(--ink); border:1px solid var(--border); border-radius:6px; margin-bottom:12px; font-family:Inter; font-size:13px;">
                     <option value="">Select a grave...</option>
                     ${deadPlayers.map(p => `<option value="${p.id}" ${uiState.amnesiacTarget === p.id ? 'selected' : ''}>${p.name} (??)</option>`).join('')}
@@ -2297,7 +2297,7 @@ function tplDay(cs) {
         let aliveOthers = cs.players.filter(p => p.isAlive && p.id !== cs.me.id);
         let roleOptions = Object.keys(ROLES).filter(r => !ROLES[r]._internal).map(r => `<option value="${r}">${ROLES[r].name}</option>`).join('');
         journalistUI = `<div class="card" style="border-color:var(--gold); margin-bottom:20px; padding:16px; text-align:left;">
-            <div style="font-size:12px; color:var(--gold); font-weight:600; text-transform:uppercase; margin-bottom:12px;">📰 Public Accusation (One Use)</div>
+            <div style="font-size:12px; color:var(--gold); font-weight:600; text-transform:uppercase; margin-bottom:12px;"> Public Accusation (One Use)</div>
             <select id="journalist-target" onchange="uiState.journalistTarget = this.value" style="width:100%; padding:8px; background:var(--bg-dark); color:var(--ink); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-family:Inter; font-size:13px;">
                 <option value="">Select target...</option>
                 ${aliveOthers.map(p => `<option value="${p.id}" ${uiState.journalistTarget === p.id ? 'selected' : ''}>${p.name}</option>`).join('')}
@@ -2322,7 +2322,7 @@ function tplDay(cs) {
         }[cs.me.herbalistPotion];
         
         herbalistUI = `<div class="card" style="border-color:${potionColor}; margin-bottom:20px; padding:16px; text-align:left;">
-            <div style="font-size:12px; color:${potionColor}; font-weight:600; text-transform:uppercase; margin-bottom:4px;">🧪 Potion: ${cs.me.herbalistPotion} (One Use)</div>
+            <div style="font-size:12px; color:${potionColor}; font-weight:600; text-transform:uppercase; margin-bottom:4px;"> Potion: ${cs.me.herbalistPotion} (One Use)</div>
             <div style="font-size:11px; color:var(--ink-dim); margin-bottom:12px; font-style:italic;">${potionDesc}</div>
             <select id="herbalist-target" onchange="uiState.herbalistTarget = this.value" style="width:100%; padding:8px; background:var(--bg-dark); color:var(--ink); border:1px solid var(--border); border-radius:6px; margin-bottom:12px; font-family:Inter; font-size:13px;">
                 <option value="">Select target...</option>
@@ -2332,7 +2332,7 @@ function tplDay(cs) {
         </div>`;
     }
 
-    let herbalistRevealHTML = (cs.me && cs.me.herbalistRevealResult) ? `<div style="text-align:center; margin-bottom:20px; padding:12px; background:rgba(201,167,20,0.1); border:1px solid var(--gold); border-radius:8px; color:var(--gold); font-weight:600; font-size:13px;">🧪 ${cs.me.herbalistRevealResult}</div>` : '';
+    let herbalistRevealHTML = (cs.me && cs.me.herbalistRevealResult) ? `<div style="text-align:center; margin-bottom:20px; padding:12px; background:rgba(201,167,20,0.1); border:1px solid var(--gold); border-radius:8px; color:var(--gold); font-weight:600; font-size:13px;"> ${cs.me.herbalistRevealResult}</div>` : '';
 
     let dayEventsHTML = '';
     if (cs.tempState.dayEvents && cs.tempState.dayEvents.length > 0) {
@@ -2350,7 +2350,7 @@ function tplDay(cs) {
         let iSkipped = cs.skipVotes && cs.skipVotes[cs.me.id];
         skipVoteBtn = `<div style="text-align:center;">
             <button class="skip-btn ${iSkipped ? 'voted' : ''}" data-action="skip-vote" ${iSkipped ? 'disabled' : ''}>
-                ${iSkipped ? '✓ Skip Voted' : '⏭ Skip Vote'} (${skipCount}/${Math.floor(aliveCount / 2) + 1})
+                ${iSkipped ? ' Skip Voted' : ' Skip Vote'} (${skipCount}/${Math.floor(aliveCount / 2) + 1})
             </button>
         </div>`;
     }
@@ -2418,10 +2418,10 @@ function tplGameOver(cs) {
     
     // Side wins
     let sideWins = '';
-    if (cs.tempState.survivorWin) sideWins += `<div style="margin-top:16px; padding:10px; background:rgba(140,140,140,0.1); border:1px solid rgba(140,140,140,0.3); border-radius:8px; color:var(--neutral); font-size:13px; text-align:center;">🛡 <b>Survivor Win:</b> ${cs.tempState.survivorWin.join(', ')}</div>`;
-    if (cs.tempState.angelWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(201,167,20,0.1); border:1px solid rgba(201,167,20,0.3); border-radius:8px; color:var(--gold); font-size:13px; text-align:center;">😇 <b>Guardian Angel Win:</b> ${cs.tempState.angelWin.join(', ')}</div>`;
-    if (cs.tempState.prophetWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(163,29,29,0.1); border:1px solid var(--violet); border-radius:8px; color:var(--violet); font-size:13px; text-align:center;">🔮 <b>Prophet Ascension:</b> ${cs.tempState.prophetWin.join(', ')}</div>`;
-    if (cs.tempState.saboteurWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(140,140,140,0.1); border:1px solid rgba(140,140,140,0.3); border-radius:8px; color:var(--neutral); font-size:13px; text-align:center;">🔧 <b>Saboteur Win:</b> ${cs.tempState.saboteurWin.join(', ')}</div>`;
+    if (cs.tempState.survivorWin) sideWins += `<div style="margin-top:16px; padding:10px; background:rgba(140,140,140,0.1); border:1px solid rgba(140,140,140,0.3); border-radius:8px; color:var(--neutral); font-size:13px; text-align:center;"> <b>Survivor Win:</b> ${cs.tempState.survivorWin.join(', ')}</div>`;
+    if (cs.tempState.angelWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(201,167,20,0.1); border:1px solid rgba(201,167,20,0.3); border-radius:8px; color:var(--gold); font-size:13px; text-align:center;"> <b>Guardian Angel Win:</b> ${cs.tempState.angelWin.join(', ')}</div>`;
+    if (cs.tempState.prophetWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(163,29,29,0.1); border:1px solid var(--violet); border-radius:8px; color:var(--violet); font-size:13px; text-align:center;"> <b>Prophet Ascension:</b> ${cs.tempState.prophetWin.join(', ')}</div>`;
+    if (cs.tempState.saboteurWin) sideWins += `<div style="margin-top:8px; padding:10px; background:rgba(140,140,140,0.1); border:1px solid rgba(140,140,140,0.3); border-radius:8px; color:var(--neutral); font-size:13px; text-align:center;"> <b>Saboteur Win:</b> ${cs.tempState.saboteurWin.join(', ')}</div>`;
 
     return `<div class="screen screen-top"><div class="card" style="border-color:${TEAM_COLORS[w.team]}; padding:48px 24px; margin-top:20px;"><div class="team-badge" style="border-color:${TEAM_COLORS[w.team]}; color:${TEAM_COLORS[w.team]}; margin-bottom:16px;">Game Over</div><h2 class="title-huge italic" style="color:${TEAM_COLORS[w.team]}; text-shadow:0 0 20px ${TEAM_COLORS[w.team]}40;">${w.title}</h2>${sideWins}</div><div class="list" style="margin-top:40px;">${cs.players.map(p => {
         let role = p.roleReveal || p.role;
