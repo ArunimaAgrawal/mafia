@@ -734,18 +734,39 @@
         .tarot-card {
             position: relative;
             overflow: hidden;
-            border: 2px solid var(--gold);
-            border-radius: 16px;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 30px rgba(201, 167, 20, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6);
-            aspect-ratio: 9 / 16;
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 15px var(--gold), 0 0 30px rgba(201, 167, 20, 0.4), 0 0 60px rgba(201, 167, 20, 0.2);
+        }
+        .tarot-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.8), inset 0 0 120px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .tarot-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .tarot-card-info {
+            padding: 12px 16px;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .tarot-card-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.95) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.97) 100%);
             pointer-events: none;
             border-radius: 14px;
         }
@@ -756,57 +777,21 @@
         }
 
         .tarot-card::before {
-            content: '';
-            position: absolute;
-            inset: 6px;
-            border: 1px solid rgba(201, 167, 20, 0.25);
-            border-radius: 12px;
-            pointer-events: none;
-            z-index: 2;
+            display: none;
         }
 
         .tarot-card::after {
-            content: '  ';
-            position: absolute;
-            bottom: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(201, 167, 20, 0.3);
-            font-size: 10px;
-            letter-spacing: 8px;
-            pointer-events: none;
-            z-index: 2;
+            display: none;
         }
 
         .tarot-corner {
-            position: absolute;
-            color: rgba(201, 167, 20, 0.35);
-            font-size: 18px;
-            pointer-events: none;
-            line-height: 1;
+            display: none;
         }
 
-        .tarot-corner.tl {
-            top: 12px;
-            left: 14px;
-        }
-
-        .tarot-corner.tr {
-            top: 12px;
-            right: 14px;
-        }
-
-        .tarot-corner.bl {
-            bottom: 28px;
-            left: 14px;
-            transform: rotate(180deg);
-        }
-
-        .tarot-corner.br {
-            bottom: 28px;
-            right: 14px;
-            transform: rotate(180deg);
-        }
+        .tarot-corner.tl { display: none; }
+        .tarot-corner.tr { display: none; }
+        .tarot-corner.bl { display: none; }
+        .tarot-corner.br { display: none; }
 
         .tarot-divider {
             height: 1px;
@@ -3127,45 +3112,45 @@
         }
 
         const ROLE_IMAGES = {
-            Villager: 'images/villager.jpeg',
-            Doctor: 'images/doctor.jpeg',
-            Detective: 'images/detective.jpeg',
-            Vigilante: 'images/vigilante.jpeg',
-            Escort: 'images/escort.jpeg',
-            Bodyguard: 'images/bodyguard.jpeg',
-            Mayor: 'images/mayor.jpeg',
-            Spy: 'images/spy.jpeg',
-            Watcher: 'images/watcher.jpeg',
-            DrunkDetective: 'images/drunk detective.jpeg',
-            ParanoidDoctor: 'images/paranoid doctor.jpeg',
-            Trapper: 'images/trapper.jpeg',
-            Journalist: 'images/journalist.jpeg',
-            Herbalist: 'images/herbalist.jpeg',
-            InnocentTwin: 'images/twin.jpeg',
-            Mafia: 'images/mafia.jpeg',
-            Godfather: 'images/godfather.jpeg',
-            Framer: 'images/framer.jpeg',
-            Consigliere: 'images/consigliere.jpeg',
-            Blackmailer: 'images/blackmailer.jpeg',
-            IdentityThief: 'images/identity thief.jpeg',
-            Stalker: 'images/stalker.jpeg',
-            Jester: 'images/jester.jpeg',
-            Witch: 'images/witch.jpeg',
-            SerialKiller: 'images/serial killer.jpeg',
-            Executioner: 'images/executioner.jpeg',
-            Survivor: 'images/surviour.jpeg',
-            GuardianAngel: 'images/guardian angel.jpeg',
-            Saboteur: 'images/saboteur.jpeg',
-            Phantom: 'images/phantom.jpeg',
-            Arsonist: 'images/arsonist.jpeg',
-            PlagueDoctor: 'images/plague doctor.jpeg',
-            Prophet: 'images/prophet.jpeg',
-            Twin: 'images/twin.jpeg',
-            EvilTwin: 'images/twin.jpeg',
-            Gravedigger: 'images/gravedigger.jpeg',
-            Cursed: 'images/cursed.jpeg',
-            Amnesiac: 'images/amnesiac.jpeg',
-            Demon: 'images/demon.jpeg'
+            Villager: 'images/villager.png',
+            Doctor: 'images/doctor.png',
+            Detective: 'images/detective.png',
+            Vigilante: 'images/vigilante.png',
+            Escort: 'images/escort.png',
+            Bodyguard: 'images/bodyguard.png',
+            Mayor: 'images/mayor.png',
+            Spy: 'images/spy.png',
+            Watcher: 'images/watcher.png',
+            DrunkDetective: 'images/drunk detective.png',
+            ParanoidDoctor: 'images/paranoid doctor.png',
+            Trapper: 'images/trapper.png',
+            Journalist: 'images/journalist.png',
+            Herbalist: 'images/herbalist.png',
+            InnocentTwin: 'images/twin.png',
+            Mafia: 'images/mafia.png',
+            Godfather: 'images/godfather.png',
+            Framer: 'images/framer.png',
+            Consigliere: 'images/consigliere.png',
+            Blackmailer: 'images/blackmailer.png',
+            IdentityThief: 'images/identity thief.png',
+            Stalker: 'images/stalker.png',
+            Jester: 'images/jester.png',
+            Witch: 'images/witch.png',
+            SerialKiller: 'images/serial killer.png',
+            Executioner: 'images/executioner.png',
+            Survivor: 'images/surviour.png',
+            GuardianAngel: 'images/guardian angel.png',
+            Saboteur: 'images/saboteur.png',
+            Phantom: 'images/phantom.png',
+            Arsonist: 'images/arsonist.png',
+            PlagueDoctor: 'images/plague doctor.png',
+            Prophet: 'images/prophet.png',
+            Twin: 'images/twin.png',
+            EvilTwin: 'images/twin.png',
+            Gravedigger: 'images/gravedigger.png',
+            Cursed: 'images/cursed.png',
+            Amnesiac: 'images/amnesiac.png',
+            Demon: 'images/demon.png'
         };
 
         /* ── ROLE DEAL (Tarot Card Style) ── */
@@ -3191,18 +3176,15 @@
 
 
             return `<div class="screen">
-                <div class="tarot-card" style="padding:24px; border-color:${teamColor}; margin-top: 20px; background-image: url('${roleImage}'); background-size: cover; background-position: center; box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 8px 32px rgba(0,0,0,0.6); display:flex; flex-direction:column; justify-content:flex-end;">
-                    <div class="tarot-card-overlay"></div>
-                    <div class="tarot-corner tl" style="color:${teamColor}"></div><div class="tarot-corner tr" style="color:${teamColor}"></div>
-                    <div class="tarot-corner bl" style="color:${teamColor}"></div><div class="tarot-corner br" style="color:${teamColor}"></div>
-                    <div class="team-badge" style="border-color:${teamColor}; color:${teamColor}; position:absolute; top:24px; left:24px;"> ${r.team} </div>
-                    <div class="subtitle" style="margin-bottom:0; font-size:14px; opacity:0.9;">You are the</div>
-                    <h2 class="title-huge italic" style="color:${teamColor}; margin-top:4px; margin-bottom:0; text-shadow:0 0 30px ${teamColor}40, 0 2px 8px rgba(0,0,0,0.8); font-size:48px;">${r.name}</h2>
-                    <div class="tarot-divider" style="background: linear-gradient(90deg, transparent, ${teamColor} 30%, ${teamColor} 70%, transparent);"></div>
-                    <p style="font-size:15px; line-height:1.7; color:var(--ink); font-weight:400; text-shadow:0 1px 4px rgba(0,0,0,0.8);">${r.desc}</p>
-                    <p style="margin-top:16px; font-size:13px; color:var(--ink-dim); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; text-shadow:0 1px 4px rgba(0,0,0,0.8);">Goal: ${r.win}</p>
-                    ${mates}${extraInfo}
+                <div class="tarot-card" style="margin-top: 20px;">
+                    <img src="${roleImage}" alt="${r.name}">
+                    <div class="tarot-card-info">
+                        <h2 class="title-huge italic" style="color:${teamColor}; font-size:28px; margin-bottom:6px;">${r.name}</h2>
+                        <p style="font-size:13px; color:var(--ink); line-height:1.5;">${r.desc}</p>
+                        <p style="font-size:11px; color:var(--ink-dim); margin-top:6px; text-transform:uppercase; letter-spacing:0.05em;">Goal: ${r.win}</p>
+                    </div>
                 </div>
+                ${mates}${extraInfo}
                 <div class="spacer"></div>
                 <button class="btn-primary" data-action="ready">I Understand</button>
             </div>`;
